@@ -41,13 +41,14 @@ class _LoginPageState extends State<LoginPage>{
                                 fontSize: 18,
                               )
                           ),
-                          icon: Image.asset('images/google_logo.png'),
-                          /*icon: Icon(
-                              Icons.account_circle,
-                              color: Colors.black,
-                          ),*/
+                          icon: Image.asset(
+                              'images/google_logo.png',
+                              width: 50,
+                              height: 50,
+                          ),
                           style: ElevatedButton.styleFrom(
                             primary: Colors.white,
+                            onPrimary: Colors.grey,
                             shape: new RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(15.0),
                             ),
