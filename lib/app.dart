@@ -10,33 +10,13 @@ class TnT extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TnT',
-      home: MyApp(),
+      home: MyHomePage(),
       initialRoute: '/login',
-      onGenerateRoute: _getRoute,
+      routes: {
+        '/login': (context) => SplashScreen(),
+        '/home': (context) => MyHomePage(),
+        '/addTimeTable': (context) => addTimeTable(),
+      }
     );
-  }
-
-  Route<dynamic> _getRoute(RouteSettings settings) {
-    if (settings.name == '/login') {
-      return MaterialPageRoute<void>(
-        settings: settings,
-        builder: (BuildContext context) => SplashScreen(),
-        fullscreenDialog: true,
-      );
-    }
-    else if (settings.name == '/home'){
-      return MaterialPageRoute<void>(
-        settings: settings,
-        builder: (BuildContext context) => MyApp(),
-        fullscreenDialog: true,
-      );
-    }
-    else if (settings.name == '/addTimeTable'){
-      return MaterialPageRoute<void>(
-        settings: settings,
-        builder: (BuildContext context) => MyApp(),
-        fullscreenDialog: true,
-      );
-    }
   }
 }

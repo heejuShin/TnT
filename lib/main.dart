@@ -1,30 +1,10 @@
 import 'package:flutter/material.dart';
 import 'app.dart';
 
-/*
-void main() {
-  runApp(TnT());
-}*/
-
 void main() => runApp(TnT());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
+  final String title = "TnT";
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -61,18 +41,13 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             ElevatedButton.icon(
-              label: Text("add page로 이동 (임시)"),
+              label: Text("페이지 확인용 버튼"),
               icon: Icon(Icons.help),
               style: ElevatedButton.styleFrom(
                 primary: Colors.grey,
               ),
               onPressed: () {
-                print("check");
-                /*Navigator.pushNamed(
-                  context,
-                  "/login"
-                );*/
-                //Navigator.of(context).pushNamed('/addTimeTable');
+                Navigator.pushNamed(context, '/addTimeTable');
               },
             ),
           ],
