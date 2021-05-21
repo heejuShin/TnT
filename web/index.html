@@ -42,4 +42,28 @@
   </script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+    apiKey: "AIzaSyDbbhYao7av4yHM_7ab6j-7MSrokORrr14",
+    authDomain: "time-table-and-to-do-list.firebaseapp.com",
+    projectId: "time-table-and-to-do-list",
+    storageBucket: "time-table-and-to-do-list.appspot.com",
+    messagingSenderId: "943078629174",
+    appId: "1:943078629174:web:05637d39fef367418e1d97",
+    measurementId: "G-DQ7LRNDVF1"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
 </html>
