@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'main.dart';
 import 'login.dart';
+import 'addTimeTable.dart';
 
 
 class TnT extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,11 +20,18 @@ class TnT extends StatelessWidget {
     if (settings.name == '/login') {
       return MaterialPageRoute<void>(
         settings: settings,
-        builder: (BuildContext context) => LoginPage(),
+        builder: (BuildContext context) => SplashScreen(),
         fullscreenDialog: true,
       );
     }
     else if (settings.name == '/home'){
+      return MaterialPageRoute<void>(
+        settings: settings,
+        builder: (BuildContext context) => MyApp(),
+        fullscreenDialog: true,
+      );
+    }
+    else if (settings.name == '/addTimeTable'){
       return MaterialPageRoute<void>(
         settings: settings,
         builder: (BuildContext context) => MyApp(),

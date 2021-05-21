@@ -1,4 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'dart:async';
+
+class SplashScreen extends StatefulWidget{
+ @override
+ _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>{
+  final splashDelay = 3;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadWidget();
+  }
+
+  _loadWidget() async {
+    var _duration = Duration(seconds: splashDelay);
+    return Timer(_duration, navigationPage);
+  }
+
+  void navigationPage() {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+  }
+
+
+  @override
+  Widget build(BuildContext context){
+    return MaterialApp(
+        title: 'Welcome to TnT',
+        home: Container( //컨테이너로 감싼다.
+          decoration: BoxDecoration( //decoration 을 준다.
+          image: DecorationImage(
+            image: AssetImage("images/logo.png"), fit: BoxFit.contain)),
+        ),
+    );
+  }
+}
 
 class LoginPage extends StatefulWidget {
   @override

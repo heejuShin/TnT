@@ -32,6 +32,8 @@ dev_dependencies:
   cloud_firestore: ^1.0.0
   firebase_auth: ^1.0.0
   provider: ^5.0.0
+  #google login
+  google_sign_in: "^4.5.1"
 
 flutter:
   uses-material-design: true
