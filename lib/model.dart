@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 
 class PonyModel {
-  String name = 'Twilight Sparkle';
+  String name;
   String type = 'U';
   int age = 7;
   String gender = "F";
@@ -15,16 +15,14 @@ class PonyModel {
   String description =
       'An intelligent and dutiful scholar with an avid love of learning and skill in unicorn magic such as levitation, teleportation, and the creation of force fields.';
   List<String> hobbies = <String>[
-    'flying',
-    'singing',
-    'exploring',
-    'hiding',
-    'coloring'
+    '월',
+    '화',
   ];
   double height = 3.5;
   int weight = 45;
   String style = "MG";
-  DateTime showDateTime = DateTime(2010, 10, 10, 20, 30);
+  //DateTime showDateTime = DateTime(2010, 10, 10, 20, 30);
+  DateTime showDateTime;
   double ticketPrice = 65.99;
   int boxOfficePhone = 18005551212;
   String email = 'me@nowhere.org';
@@ -43,18 +41,11 @@ class PonyModel {
 }
 
 const List<String> allHobbies = <String>[
-  'running',
-  'flying',
-  'coloring',
-  'jumping',
-  'eating',
-  'hiding',
-  'exploring',
-  'singing',
-  'dancing',
-  'acting',
-  'cleaning',
-  'shopping',
-  'sewing',
-  'cooking',
+  '월',
+  '화',
+  '수',
+  '목',
+  '금',
+  '토',
+  '일',
 ];
