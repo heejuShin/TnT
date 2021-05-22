@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:card_settings/card_settings.dart';
 
-
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:card_settings/card_settings.dart';
@@ -12,13 +10,13 @@ import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'model.dart';
 
-class addTimeTable extends StatefulWidget{
+class Form extends StatefulWidget{
 
   @override
-  _addTimeTableState createState() => _addTimeTableState();
+  _FormState createState() => _FormState();
 }
 
-class _addTimeTableState extends State<addTimeTable> {
+class _FormState extends State<Form> {
 
   @override
   Widget build(context){
@@ -41,10 +39,10 @@ class _addTimeTableState extends State<addTimeTable> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-            "일정 추가",
-            style: TextStyle(
-              color: Colors.black54,
-            ),
+          "일정 추가",
+          style: TextStyle(
+            color: Colors.black54,
+          ),
         ),
         leading:
         IconButton(
@@ -119,16 +117,11 @@ class ExampleFormState extends State<ExampleForm> {
 
   AutovalidateMode _autoValidateMode = AutovalidateMode.onUserInteraction;
 
+  // keys for fields
+  // this is desirable because the fields may change order, in this example
+  // when the screen is rotated, and this will preserve what state is
+  // attached to what field.
   final GlobalKey<FormState> _nameKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _allDayKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _startKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _endKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _repeatKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _alarmKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _calendarKey = GlobalKey<FormState>();
-
-
-
   final GlobalKey<FormState> _typeKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _ageKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _genderKey = GlobalKey<FormState>();
@@ -178,7 +171,7 @@ class ExampleFormState extends State<ExampleForm> {
       form.save();
       print("저장되었습니다.");
     } else {
-       print("실패함");
+      print("실패함");
       setState(() => _autoValidateMode = AutovalidateMode.onUserInteraction);
     }
   }
@@ -191,7 +184,6 @@ class ExampleFormState extends State<ExampleForm> {
     _formKey.currentState.reset();
   }
 
-  //todo
   CardSettings _buildPortraitLayout() {
     return CardSettings.sectioned(
       showMaterialonIOS: widget.showMaterialonIOS,
@@ -200,17 +192,72 @@ class ExampleFormState extends State<ExampleForm> {
       cardless: false,
       children: <CardSettingsSection>[
         CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'Bio',
+          ),
           children: <CardSettingsWidget>[
             _buildCardSettingsText_Name(),
-            _buildCardSettingsSwitch_Allday(),
-            _buildCardSettingsDateTimePicker_Start(),
-            _buildCardSettingsDateTimePicker_End(),
-            _buildCardSettingsCheckboxPicker_Repeat(),
-            _buildCardSettingsListPicker_Alarm(),
-            //_buildCardSettingsListPicker_Type(),
+            _buildCardSettingsListPicker_Type(),
+            _buildCardSettingsRadioPicker_Gender(),
+            _buildCardSettingsNumberPicker_Age(),
+            _buildCardSettingsParagraph_Description(5),
+            _buildCardSettingsCheckboxPicker_Hobbies(),
+            _buildCardSettingsDateTimePicker_Birthday(),
+            _buildCardSettingsText_Disabled()
           ],
         ),
         CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'Colors',
+          ),
+          divider: Divider(thickness: 1.0, color: Colors.purple),
+          children: <CardSettingsWidget>[
+            _buildCardSettingsColorPicker_Coat(),
+            _buildCardSettingsColorPicker_Mane(),
+            _buildCardSettingsSwitch_Spots(),
+            _buildCardSettingsColorPicker_Spot(),
+          ],
+        ),
+        CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'Size',
+          ),
+          children: <CardSettingsWidget>[
+            _buildCardSettingsDouble_Height(),
+            _buildCardSettingsInt_Weight(),
+            _buildCardSettingsSelectionPicker_Style(),
+          ],
+        ),
+        CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'First Show',
+          ),
+          instructions: _buildCardSettingsInstructions(),
+          children: <CardSettingsWidget>[
+            _buildCardSettingsDatePicker(),
+            _buildCardSettingsPhotoPicker(),
+            _buildCardSettingsVideoPicker(),
+            _buildCardSettingsMusicPicker(),
+            _buildCardSettingsFileCustomPicker(),
+            _buildCardSettingsTimePicker(),
+            _buildCardSettingsCurrency(),
+            _buildCardSettingsPhone(),
+            _buildCardSettingsDouble_Slider(),
+          ],
+        ),
+        CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'Security',
+          ),
+          children: <CardSettingsWidget>[
+            _buildCardSettingsEmail(),
+            _buildCardSettingsPassword(),
+          ],
+        ),
+        CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'Actions',
+          ),
           children: <CardSettingsWidget>[
             _buildCardSettingsButton_Save(),
             _buildCardSettingsButton_Reset(),
@@ -231,7 +278,7 @@ class ExampleFormState extends State<ExampleForm> {
           ),
           children: <CardSettingsWidget>[
             _buildCardSettingsText_Name(),
-            //_buildCardSettingsListPicker_Type(),
+            _buildCardSettingsListPicker_Type(),
             CardFieldLayout(
               <CardSettingsWidget>[
                 _buildCardSettingsRadioPicker_Gender(),
@@ -240,8 +287,71 @@ class ExampleFormState extends State<ExampleForm> {
               flexValues: [2, 1],
             ),
             _buildCardSettingsParagraph_Description(3),
-            //_buildCardSettingsCheckboxPicker_Hobbies(),
-            _buildCardSettingsDateTimePicker_Start(),
+            _buildCardSettingsCheckboxPicker_Hobbies(),
+            _buildCardSettingsDateTimePicker_Birthday(),
+          ],
+        ),
+        CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'Security',
+          ),
+          children: <CardSettingsWidget>[
+            CardFieldLayout(<CardSettingsWidget>[
+              _buildCardSettingsEmail(),
+              _buildCardSettingsPassword(),
+            ]),
+          ],
+        ),
+        CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'Colors',
+          ),
+          children: <CardSettingsWidget>[
+            CardFieldLayout(<CardSettingsWidget>[
+              _buildCardSettingsColorPicker_Coat(),
+              _buildCardSettingsColorPicker_Mane(),
+            ]),
+            CardFieldLayout(<CardSettingsWidget>[
+              _buildCardSettingsSwitch_Spots(),
+              _buildCardSettingsColorPicker_Spot(),
+            ]),
+          ],
+        ),
+        CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'Size',
+          ),
+          children: <CardSettingsWidget>[
+            CardFieldLayout(<CardSettingsWidget>[
+              _buildCardSettingsDouble_Height(),
+              _buildCardSettingsInt_Weight(),
+              _buildCardSettingsSelectionPicker_Style(),
+            ]),
+          ],
+        ),
+        CardSettingsSection(
+          header: CardSettingsHeader(
+            label: 'First Show',
+          ),
+          instructions: _buildCardSettingsInstructions(),
+          children: <CardSettingsWidget>[
+            CardFieldLayout(<CardSettingsWidget>[
+              _buildCardSettingsDatePicker(),
+              _buildCardSettingsPhotoPicker(),
+            ]),
+            CardFieldLayout(<CardSettingsWidget>[
+              _buildCardSettingsVideoPicker(),
+              _buildCardSettingsMusicPicker(),
+            ]),
+            CardFieldLayout(<CardSettingsWidget>[
+              _buildCardSettingsFileCustomPicker(),
+              _buildCardSettingsTimePicker(),
+            ]),
+            CardFieldLayout(<CardSettingsWidget>[
+              _buildCardSettingsCurrency(),
+              _buildCardSettingsPhone(),
+            ]),
+            _buildCardSettingsDouble_Slider(),
           ],
         ),
         CardSettingsSection(
@@ -465,6 +575,23 @@ class ExampleFormState extends State<ExampleForm> {
     );
   }
 
+  CardSettingsDateTimePicker _buildCardSettingsDateTimePicker_Birthday() {
+    return CardSettingsDateTimePicker(
+      key: _datetimeKey,
+      icon: Icon(Icons.card_giftcard, color: Colors.yellow[700]),
+      label: 'Birth day',
+      initialValue: _ponyModel.showDateTime,
+      onSaved: (value) => _ponyModel.showDateTime =
+          updateJustDate(value, _ponyModel.showDateTime),
+      onChanged: (value) {
+        setState(() {
+          _ponyModel.showDateTime = value;
+        });
+        widget.onValueChanged(
+            'Show Date', updateJustDate(value, _ponyModel.showDateTime));
+      },
+    );
+  }
 
   CardSettingsInstructions _buildCardSettingsInstructions() {
     return CardSettingsInstructions(
@@ -514,6 +641,37 @@ class ExampleFormState extends State<ExampleForm> {
     );
   }
 
+  CardSettingsColorPicker _buildCardSettingsColorPicker_Spot() {
+    return CardSettingsColorPicker(
+      key: _spotKey,
+      label: 'Spot',
+      pickerType: CardSettingsColorPickerType.block,
+      initialValue: intelligentCast<Color>(_ponyModel.spotColor),
+      visible: _ponyModel.hasSpots,
+      onSaved: (value) => _ponyModel.spotColor = colorToString(value),
+      onChanged: (value) {
+        setState(() {
+          _ponyModel.type = colorToString(value);
+        });
+        widget.onValueChanged('Spot', value);
+      },
+    );
+  }
+
+  CardSettingsSwitch _buildCardSettingsSwitch_Spots() {
+    return CardSettingsSwitch(
+      key: _hasSpotsKey,
+      label: 'Has spots?',
+      initialValue: _ponyModel.hasSpots,
+      onSaved: (value) => _ponyModel.hasSpots = value,
+      onChanged: (value) {
+        setState(() {
+          _ponyModel.hasSpots = value;
+        });
+        widget.onValueChanged('Has Spots?', value);
+      },
+    );
+  }
 
   CardSettingsColorPicker _buildCardSettingsColorPicker_Mane() {
     return CardSettingsColorPicker(
@@ -553,6 +711,29 @@ class ExampleFormState extends State<ExampleForm> {
           _ponyModel.coatColor = colorToString(value);
         });
         widget.onValueChanged('Coat', value);
+      },
+    );
+  }
+
+  CardSettingsCheckboxPicker _buildCardSettingsCheckboxPicker_Hobbies() {
+    return CardSettingsCheckboxPicker(
+      key: _hobbiesKey,
+      label: 'Hobbies',
+      initialValues: _ponyModel.hobbies,
+      options: allHobbies,
+      autovalidateMode: _autoValidateMode,
+      validator: (List<String> value) {
+        if (value == null || value.isEmpty)
+          return 'You must pick at least one hobby.';
+
+        return null;
+      },
+      onSaved: (value) => _ponyModel.hobbies = value,
+      onChanged: (value) {
+        setState(() {
+          _ponyModel.hobbies = value;
+        });
+        widget.onValueChanged('Hobbies', value);
       },
     );
   }
@@ -600,13 +781,36 @@ class ExampleFormState extends State<ExampleForm> {
     );
   }
 
+  CardSettingsListPicker _buildCardSettingsListPicker_Type() {
+    return CardSettingsListPicker(
+      key: _typeKey,
+      label: 'Type',
+      initialValue: _ponyModel.type,
+      hintText: 'Select One',
+      autovalidateMode: _autoValidateMode,
+      options: <String>['Earth', 'Unicorn', 'Pegasi', 'Alicorn'],
+      values: <String>['E', 'U', 'P', 'A'],
+      validator: (String value) {
+        if (value == null || value.isEmpty) return 'You must pick a type.';
+        return null;
+      },
+      onSaved: (value) => _ponyModel.type = value,
+      onChanged: (value) {
+        setState(() {
+          _ponyModel.type = value;
+        });
+        widget.onValueChanged('Type', value);
+      },
+    );
+  }
+
   CardSettingsText _buildCardSettingsText_Name() {
     return CardSettingsText(
       key: _nameKey,
-      label: '일정',
-      hintText: '일정을 입력해주세요.',
+      label: 'Name',
+      hintText: 'something cute...',
       initialValue: _ponyModel.name,
-      //requiredIndicator: Text('*', style: TextStyle(color: Colors.red)),
+      requiredIndicator: Text('*', style: TextStyle(color: Colors.red)),
       autovalidateMode: _autoValidateMode,
       focusNode: _nameNode,
       inputAction: TextInputAction.next,
@@ -621,118 +825,11 @@ class ExampleFormState extends State<ExampleForm> {
         setState(() {
           _ponyModel.name = value;
         });
-        //widget.onValueChanged('Name', value);
+        widget.onValueChanged('Name', value);
       },
     );
   }
-  CardSettingsSwitch _buildCardSettingsSwitch_Allday() {
-    return CardSettingsSwitch(
-      key: _hasSpotsKey,
-      label: '종일',
-      initialValue: _ponyModel.hasSpots,
-      onSaved: (value) => _ponyModel.hasSpots = value,
-      onChanged: (value) {
-        setState(() {
-          _ponyModel.hasSpots = value;
-        });
-        //widget.onValueChanged('Has Spots?', value);
-      },
-    );
-  }
-  CardSettingsDateTimePicker _buildCardSettingsDateTimePicker_Start() {
-    return CardSettingsDateTimePicker(
-      key: _datetimeKey,
-      //icon: Icon(Icons.card_giftcard, color: Colors.yellow[700]),
-      label: '시작',
-      initialValue: _ponyModel.showDateTime,
-      onSaved: (value) => _ponyModel.showDateTime =
-          updateJustDate(value, _ponyModel.showDateTime),
-      onChanged: (value) {
-        setState(() {
-          _ponyModel.showDateTime = value;
-        });
-        //widget.onValueChanged(
-        //    'Show Date', updateJustDate(value, _ponyModel.showDateTime));
-      },
-    );
-  }
-  CardSettingsDateTimePicker _buildCardSettingsDateTimePicker_End() {
-    return CardSettingsDateTimePicker(
-      //key: _datetimeKey,
-      label: '종료',
-      //initialValue: _ponyModel.showDateTime,
-      //onSaved: (value) => _ponyModel.showDateTime =
-      //    updateJustDate(value, _ponyModel.showDateTime),
-      onChanged: (value) {
-        setState(() {
-          _ponyModel.showDateTime = value;
-        });
-      },
-    );
-  }
-  CardSettingsCheckboxPicker _buildCardSettingsCheckboxPicker_Repeat() {
-    return CardSettingsCheckboxPicker(
-      key: _hobbiesKey,
-      label: '반복',
-      initialValues: _ponyModel.hobbies,
-      options: allHobbies,
-      autovalidateMode: _autoValidateMode,
-      validator: (List<String> value) {
-        if (value == null || value.isEmpty)
-          return 'You must pick at least one hobby.';
 
-        return null;
-      },
-      onSaved: (value) => _ponyModel.hobbies = value,
-      onChanged: (value) {
-        setState(() {
-          _ponyModel.hobbies = value;
-        });
-        //widget.onValueChanged('Hobbies', value);
-      },
-    );
-  }
-  CardSettingsListPicker _buildCardSettingsListPicker_Alarm() {
-    return CardSettingsListPicker(
-      key: _typeKey,
-      label: '알람',
-      initialValue: "없음",
-      //initialValue: _ponyModel.type,
-      //hintText: 'Select One',
-      autovalidateMode: _autoValidateMode,
-      options: <String>['없음', '5분전', '10분전', '1시간전'],
-      values: <String>['N', '5', '10', '1'],
-      validator: (String value) {
-        if (value == null || value.isEmpty) return 'You must pick a type.';
-        return null;
-      },
-      onSaved: (value) => _ponyModel.type = value,
-      onChanged: (value) {
-        setState(() {
-          _ponyModel.type = value;
-        });
-        widget.onValueChanged('Type', value);
-      },
-    );
-  }
-  //todo
-
-  CardSettingsColorPicker _buildCardSettingsColorPicker_Spot() {
-    return CardSettingsColorPicker(
-      key: _spotKey,
-      label: '종일',
-      pickerType: CardSettingsColorPickerType.block,
-      initialValue: intelligentCast<Color>(_ponyModel.spotColor),
-      visible: _ponyModel.hasSpots,
-      onSaved: (value) => _ponyModel.spotColor = colorToString(value),
-      onChanged: (value) {
-        setState(() {
-          _ponyModel.type = colorToString(value);
-        });
-        widget.onValueChanged('Spot', value);
-      },
-    );
-  }
   CardSettingsText _buildCardSettingsText_Disabled() {
     return CardSettingsText(
       label: 'Disabled',
