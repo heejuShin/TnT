@@ -249,49 +249,6 @@ class ExampleFormState extends State<ExampleForm> {
       onPressed: savePressed,
     );
   }
-  CardSettingsParagraph _buildCardSettingsParagraph_Description(int lines) {
-    return CardSettingsParagraph(
-      key: _descriptionlKey,
-      label: 'Description',
-      initialValue: _ponyModel.description,
-      numberOfLines: lines,
-      focusNode: _descriptionNode,
-      onSaved: (value) => _ponyModel.description = value,
-      onChanged: (value) {
-        setState(() {
-          _ponyModel.description = value;
-        });
-        widget.onValueChanged('Description', value);
-      },
-    );
-  }
-
-  CardSettingsNumberPicker _buildCardSettingsNumberPicker_Age(
-      {TextAlign labelAlign}) {
-    return CardSettingsNumberPicker(
-      key: _ageKey,
-      label: 'Age',
-      labelAlign: labelAlign,
-      initialValue: _ponyModel.age,
-      min: 1,
-      max: 17,
-      stepInterval: 2,
-      validator: (value) {
-        if (value == null) return 'Age is required.';
-        if (value > 20) return 'No grown-ups allwed!';
-        if (value < 3) return 'No Toddlers allowed!';
-        return null;
-      },
-      onSaved: (value) => _ponyModel.age = value,
-      onChanged: (value) {
-        setState(() {
-          _ponyModel.age = value;
-        });
-        widget.onValueChanged('Age', value);
-      },
-    );
-  }
-
   CardSettingsText _buildCardSettingsText_Name() {
     return CardSettingsText(
       key: _nameKey,
@@ -305,7 +262,7 @@ class ExampleFormState extends State<ExampleForm> {
       inputActionNode: _descriptionNode,
       //inputMask: '000.000.000.000',
       validator: (value) {
-        if (value == null || value.isEmpty) return 'Name is required.';
+        if (value == null || value.isEmpty) return '일정을 적어주세요.';
         return null;
       },
       onSaved: (value) => _ponyModel.name = value,
@@ -403,7 +360,7 @@ class ExampleFormState extends State<ExampleForm> {
         setState(() {
           _ponyModel.type = value;
         });
-        widget.onValueChanged('Type', value);
+        //widget.onValueChanged('Type', value);
       },
     );
   }
@@ -426,7 +383,7 @@ class ExampleFormState extends State<ExampleForm> {
         setState(() {
           _ponyModel.type = value;
         });
-        widget.onValueChanged('Type', value);
+        //widget.onValueChanged('Type', value);
       },
     );
   }
