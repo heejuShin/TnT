@@ -11,11 +11,11 @@ class TnT extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TnT',
-      home: MyHomePage(),
+      home: myCalendar(),
       initialRoute: '/login',
       routes: {
         '/login': (context) => SplashScreen(),
-        '/home': (context) => MyHomePage(),
+        '/home': (context) => myCalendar(),
         '/addTimeTable': (context) => addTimeTable(),
         '/editTimeTable': (context) => editTimeTable(),
       }
