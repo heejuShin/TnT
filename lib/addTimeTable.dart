@@ -70,8 +70,7 @@ class _addTimeTableState extends State<addTimeTable> {
             _timeTableModel = TimeTableModel();
             await _timeTableModel.loadMedia();
             await setState(() => loaded = true);
-            print("바뀜");
-            _formKey.currentState.reset();
+            //_formKey.currentState.reset();
           },
         ),
         actions: <Widget>[
@@ -131,7 +130,6 @@ class ExampleFormState extends State<ExampleForm> {
   @override
   Widget build(BuildContext context) {
     if (loaded) {
-      print("loaded");
       return Form(
         key: _formKey,
         child: (widget.orientation == Orientation.portrait)
@@ -139,7 +137,6 @@ class ExampleFormState extends State<ExampleForm> {
             : _buildLandscapeLayout(),
       );
     } else {
-      print("not not");
       return Center(child: CircularProgressIndicator());
     }
   }
@@ -231,19 +228,23 @@ class ExampleFormState extends State<ExampleForm> {
 
   CardSettingsButton _buildCardSettingsButton_Reset() {
     return CardSettingsButton(
-      label: 'RESET',
+      label: '취소',
       isDestructive: true,
-      onPressed: resetPressed,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
+      //onPressed: resetPressed,
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      backgroundColor: Color(0xfff2d8d3),
+      textColor: Colors.black,
       bottomSpacing: 4.0,
     );
   }
 
   CardSettingsButton _buildCardSettingsButton_Save() {
     return CardSettingsButton(
-      label: 'SAVE',
-      backgroundColor: Colors.green,
+      label: '등록',
+      backgroundColor: Color(0xffd7f2d3),
+      //backgroundColor: Colors.green,
       onPressed: savePressed,
     );
   }
