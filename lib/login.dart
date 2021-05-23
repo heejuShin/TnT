@@ -2,6 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
+
+UserCredential userCredential;
+GoogleSignInAccount googleUser;
+enum ApplicationLoginState{
+  loggedOut,
+  emailAddress,
+  loggedIn,
+}
+Future<UserCredential> signInWithGoogle() async {
+  googleUser = await GoogleSignIn().signIn();
+  final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth.accessToken,
+    idToken: googleAuth.idToken,
+  );
+  return await FirebaseAuth.instance.signInWithCredential(credential);
+}
+
 
 class SplashScreen extends StatefulWidget{
  @override
@@ -95,8 +114,14 @@ class _LoginPageState extends State<LoginPage>{
                             ),
                           ),
                           onPressed: () async{
+                            await Firebase.initializeApp(); //나중에 옮기기
+                            final value = await (userCredential = await signInWithGoogle());
+                            final test = Navigator.pop(context);
+                            Navigator.pushNamed(
+                              context, '/home',
+                            );
                             //구글 로그인
-                            Navigator.pop(context);
+                            //Navigator.pop(context);
                           },
                         ),
                       ),
