@@ -41,13 +41,23 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             ElevatedButton.icon(
-              label: Text("페이지 확인용 버튼"),
+              label: Text("페이지 확인용 버튼 - 생성"),
               icon: Icon(Icons.help),
               style: ElevatedButton.styleFrom(
                 primary: Colors.grey,
               ),
               onPressed: () {
                 Navigator.pushNamed(context, '/addTimeTable');
+              },
+            ),
+            ElevatedButton.icon(
+              label: Text("페이지 확인용 버튼 - 수정"),
+              icon: Icon(Icons.help),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey,
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/editTimeTable');
               },
             ),
           ],

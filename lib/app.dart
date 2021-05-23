@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'login.dart';
 import 'addTimeTable.dart';
+import 'editTimeTable.dart';
 
 
 class TnT extends StatelessWidget {
@@ -16,6 +17,7 @@ class TnT extends StatelessWidget {
         '/login': (context) => SplashScreen(),
         '/home': (context) => MyHomePage(),
         '/addTimeTable': (context) => addTimeTable(),
+        '/editTimeTable': (context) => editTimeTable(),
       }
     );
   }

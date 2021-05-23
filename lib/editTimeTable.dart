@@ -25,13 +25,13 @@ final GlobalKey<FormState> _calendarKey = GlobalKey<FormState>();
 final FocusNode _nameNode = FocusNode();
 final FocusNode _descriptionNode = FocusNode();
 
-class addTimeTable extends StatefulWidget{
+class editTimeTable extends StatefulWidget{
 
   @override
-  _addTimeTableState createState() => _addTimeTableState();
+  _editTimeTableState createState() => _editTimeTableState();
 }
 
-class _addTimeTableState extends State<addTimeTable> {
+class _editTimeTableState extends State<editTimeTable> {
 
   @override
   Widget build(context){
@@ -54,7 +54,7 @@ class _addTimeTableState extends State<addTimeTable> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "일정 추가",
+          "일정 수정",
           style: TextStyle(
             color: Colors.black54,
           ),
@@ -336,9 +336,7 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsListPicker(
       key: _alarmKey,
       label: '알람',
-      initialValue: 'N',
-      //initialValue:  _timeTableModel.alarm,
-      //hintText: 'Select One',
+      initialValue:  _timeTableModel.alarm,
       autovalidateMode: _autoValidateMode,
       options: allAlarms,
       values: allAlarmsValues,
@@ -358,9 +356,7 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsListPicker(
       key: _calendarKey,
       label: '캘린더',
-      initialValue: 'C',
-      //initialValue: _timeTableModel.calendar,
-      //hintText: 'Select One',
+      initialValue: _timeTableModel.calendar,
       autovalidateMode: _autoValidateMode,
       options: allCalendars,
       values: allCalendarsValues,

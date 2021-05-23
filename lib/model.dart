@@ -36,7 +36,7 @@ class TimeTableModel {
     '월',
     '화',
   ];
-  String alarm = 'N';
+  String alarm = '5';
   String calendar = 'C';
 
 

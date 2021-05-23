@@ -253,7 +253,6 @@ class ExampleFormState extends State<ExampleForm> {
       key: _nameKey,
       label: '일정',
       hintText: '일정을 입력해주세요.',
-      initialValue: _timeTableModel.name,
       //requiredIndicator: Text('*', style: TextStyle(color: Colors.red)),
       autovalidateMode: _autoValidateMode,
       focusNode: _nameNode,
@@ -277,7 +276,6 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsSwitch(
       key: _allDayKey,
       label: '종일',
-      initialValue: _timeTableModel.isAllday,
       onSaved: (value) => _timeTableModel.isAllday = value,
       onChanged: (value) {
         setState(() {
@@ -290,7 +288,6 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsDateTimePicker(
       key: _startKey,
       label: '시작',
-      initialValue: _timeTableModel.start,
       onSaved: (value) => _timeTableModel.start =
           updateJustDate(value, _timeTableModel.start),
       onChanged: (value) {
@@ -304,7 +301,6 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsDateTimePicker(
       key: _endKey,
       label: '종료',
-      initialValue: _timeTableModel.end,
       onSaved: (value) =>  _timeTableModel.end =
           updateJustDate(value,  _timeTableModel.end),
       onChanged: (value) {
@@ -318,7 +314,7 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsCheckboxPicker(
       key: _repeatKey,
       label: '반복',
-      initialValues:  _timeTableModel.repeats,
+      initialValues: [],
       options: allRepeats,
       autovalidateMode: _autoValidateMode,
       validator: (List<String> value) {
@@ -337,8 +333,6 @@ class ExampleFormState extends State<ExampleForm> {
       key: _alarmKey,
       label: '알람',
       initialValue: 'N',
-      //initialValue:  _timeTableModel.alarm,
-      //hintText: 'Select One',
       autovalidateMode: _autoValidateMode,
       options: allAlarms,
       values: allAlarmsValues,
@@ -358,9 +352,7 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsListPicker(
       key: _calendarKey,
       label: '캘린더',
-      initialValue: 'C',
-      //initialValue: _timeTableModel.calendar,
-      //hintText: 'Select One',
+      initialValue: 'E',
       autovalidateMode: _autoValidateMode,
       options: allCalendars,
       values: allCalendarsValues,
