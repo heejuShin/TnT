@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:card_settings/card_settings.dart';
-
-
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:card_settings/card_settings.dart';
@@ -11,6 +8,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'model.dart';
+
+typedef LabelledValueChanged<T, U> = void Function(T label, U value);
+bool loaded = false;
+TimeTableModel _timeTableModel;
+AutovalidateMode _autoValidateMode = AutovalidateMode.onUserInteraction;
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+final GlobalKey<FormState> _nameKey = GlobalKey<FormState>();
+final GlobalKey<FormState> _allDayKey = GlobalKey<FormState>();
+final GlobalKey<FormState> _startKey = GlobalKey<FormState>();
+final GlobalKey<FormState> _endKey = GlobalKey<FormState>();
+final GlobalKey<FormState> _repeatKey = GlobalKey<FormState>();
+final GlobalKey<FormState> _alarmKey = GlobalKey<FormState>();
+final GlobalKey<FormState> _calendarKey = GlobalKey<FormState>();
+
+final FocusNode _nameNode = FocusNode();
+final FocusNode _descriptionNode = FocusNode();
 
 class addTimeTable extends StatefulWidget{
 
@@ -52,8 +65,13 @@ class _addTimeTableState extends State<addTimeTable> {
             Icons.autorenew,
           ),
           color: Colors.black54,
-          onPressed: () {
-            Navigator.pop(context);
+          onPressed: () async {
+            setState(() => loaded = false);
+            _timeTableModel = TimeTableModel();
+            await _timeTableModel.loadMedia();
+            await setState(() => loaded = true);
+            print("바뀜");
+            _formKey.currentState.reset();
           },
         ),
         actions: <Widget>[
@@ -73,8 +91,6 @@ class _addTimeTableState extends State<addTimeTable> {
     );
   }
 }
-
-typedef LabelledValueChanged<T, U> = void Function(T label, U value);
 
 class ExampleForm extends StatefulWidget {
   const ExampleForm(
@@ -96,9 +112,6 @@ class ExampleForm extends StatefulWidget {
 }
 
 class ExampleFormState extends State<ExampleForm> {
-  PonyModel _ponyModel;
-
-  bool loaded = false;
 
   @override
   void initState() {
@@ -108,34 +121,17 @@ class ExampleFormState extends State<ExampleForm> {
   }
 
   void initModel() async {
-    _ponyModel = PonyModel();
+    _timeTableModel = TimeTableModel();
 
-    await _ponyModel.loadMedia();
+    await _timeTableModel.loadMedia();
 
     setState(() => loaded = true);
   }
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  AutovalidateMode _autoValidateMode = AutovalidateMode.onUserInteraction;
-
-  final GlobalKey<FormState> _nameKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _allDayKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _startKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _endKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _repeatKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _alarmKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _calendarKey = GlobalKey<FormState>();
-
-  final GlobalKey<FormState> _ageKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _descriptionlKey = GlobalKey<FormState>();
-
-  final FocusNode _nameNode = FocusNode();
-  final FocusNode _descriptionNode = FocusNode();
-
   @override
   Widget build(BuildContext context) {
     if (loaded) {
+      print("loaded");
       return Form(
         key: _formKey,
         child: (widget.orientation == Orientation.portrait)
@@ -143,13 +139,13 @@ class ExampleFormState extends State<ExampleForm> {
             : _buildLandscapeLayout(),
       );
     } else {
+      print("not not");
       return Center(child: CircularProgressIndicator());
     }
   }
 
   Future savePressed() async {
     final form = _formKey.currentState;
-
     if (form.validate()) {
       form.save();
       print("저장되었습니다.");
@@ -159,6 +155,10 @@ class ExampleFormState extends State<ExampleForm> {
     }
   }
 
+  void canclePressed() {
+
+  }
+
   void resetPressed() {
     setState(() => loaded = false);
 
@@ -166,8 +166,6 @@ class ExampleFormState extends State<ExampleForm> {
 
     _formKey.currentState.reset();
   }
-
-  //todo
   CardSettings _buildPortraitLayout() {
     return CardSettings.sectioned(
       showMaterialonIOS: widget.showMaterialonIOS,
@@ -254,7 +252,7 @@ class ExampleFormState extends State<ExampleForm> {
       key: _nameKey,
       label: '일정',
       hintText: '일정을 입력해주세요.',
-      initialValue: _ponyModel.name,
+      initialValue: _timeTableModel.name,
       //requiredIndicator: Text('*', style: TextStyle(color: Colors.red)),
       autovalidateMode: _autoValidateMode,
       focusNode: _nameNode,
@@ -262,13 +260,13 @@ class ExampleFormState extends State<ExampleForm> {
       inputActionNode: _descriptionNode,
       //inputMask: '000.000.000.000',
       validator: (value) {
-        if (value == null || value.isEmpty) return '일정을 적어주세요.';
+        if (value == null || value.isEmpty) return '일정을 입력해주세요.';
         return null;
       },
-      onSaved: (value) => _ponyModel.name = value,
+      onSaved: (value) => _timeTableModel.name = value,
       onChanged: (value) {
         setState(() {
-          _ponyModel.name = value;
+          _timeTableModel.name = value;
         });
         //widget.onValueChanged('Name', value);
       },
@@ -278,30 +276,26 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsSwitch(
       key: _allDayKey,
       label: '종일',
-      initialValue: _ponyModel.hasSpots,
-      onSaved: (value) => _ponyModel.hasSpots = value,
+      initialValue: _timeTableModel.isAllday,
+      onSaved: (value) => _timeTableModel.isAllday = value,
       onChanged: (value) {
         setState(() {
-          _ponyModel.hasSpots = value;
+          _timeTableModel.isAllday = value;
         });
-        //widget.onValueChanged('Has Spots?', value);
       },
     );
   }
   CardSettingsDateTimePicker _buildCardSettingsDateTimePicker_Start() {
     return CardSettingsDateTimePicker(
       key: _startKey,
-      //icon: Icon(Icons.card_giftcard, color: Colors.yellow[700]),
       label: '시작',
-      initialValue: _ponyModel.showDateTime,
-      onSaved: (value) => _ponyModel.showDateTime =
-          updateJustDate(value, _ponyModel.showDateTime),
+      initialValue: _timeTableModel.start,
+      onSaved: (value) => _timeTableModel.start =
+          updateJustDate(value, _timeTableModel.start),
       onChanged: (value) {
         setState(() {
-          _ponyModel.showDateTime = value;
+          _timeTableModel.start = value;
         });
-        //widget.onValueChanged(
-        //    'Show Date', updateJustDate(value, _ponyModel.showDateTime));
       },
     );
   }
@@ -309,12 +303,12 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsDateTimePicker(
       key: _endKey,
       label: '종료',
-      //initialValue: _ponyModel.showDateTime,
-      //onSaved: (value) => _ponyModel.showDateTime =
-      //    updateJustDate(value, _ponyModel.showDateTime),
+      initialValue: _timeTableModel.end,
+      onSaved: (value) =>  _timeTableModel.end =
+          updateJustDate(value,  _timeTableModel.end),
       onChanged: (value) {
         setState(() {
-          _ponyModel.showDateTime = value;
+          _timeTableModel.end = value;
         });
       },
     );
@@ -323,21 +317,17 @@ class ExampleFormState extends State<ExampleForm> {
     return CardSettingsCheckboxPicker(
       key: _repeatKey,
       label: '반복',
-      initialValues: _ponyModel.hobbies,
-      options: allHobbies,
+      initialValues:  _timeTableModel.repeats,
+      options: allRepeats,
       autovalidateMode: _autoValidateMode,
       validator: (List<String> value) {
-        if (value == null || value.isEmpty)
-          return 'You must pick at least one hobby.';
-
         return null;
       },
-      onSaved: (value) => _ponyModel.hobbies = value,
+      onSaved: (value) =>  _timeTableModel.repeats = value,
       onChanged: (value) {
         setState(() {
-          _ponyModel.hobbies = value;
+          _timeTableModel.repeats = value;
         });
-        //widget.onValueChanged('Hobbies', value);
       },
     );
   }
@@ -346,21 +336,20 @@ class ExampleFormState extends State<ExampleForm> {
       key: _alarmKey,
       label: '알람',
       initialValue: 'N',
-      //initialValue: _ponyModel.type,
+      //initialValue:  _timeTableModel.alarm,
       //hintText: 'Select One',
       autovalidateMode: _autoValidateMode,
-      options: <String>['없음', '5분전', '10분전', '1시간전'],
-      values: <String>['N', '5', '10', '1'],
+      options: allAlarms,
+      values: allAlarmsValues,
       validator: (String value) {
-        if (value == null || value.isEmpty) return 'You must pick a type.';
+        if (value == null || value.isEmpty) return '선택해주세요.';
         return null;
       },
-      onSaved: (value) => _ponyModel.type = value,
+      onSaved: (value) => _timeTableModel.alarm = value,
       onChanged: (value) {
         setState(() {
-          _ponyModel.type = value;
+          _timeTableModel.alarm = value;
         });
-        //widget.onValueChanged('Type', value);
       },
     );
   }
@@ -369,19 +358,19 @@ class ExampleFormState extends State<ExampleForm> {
       key: _calendarKey,
       label: '캘린더',
       initialValue: 'C',
-      //initialValue: _ponyModel.type,
+      //initialValue: _timeTableModel.calendar,
       //hintText: 'Select One',
       autovalidateMode: _autoValidateMode,
-      options: <String>['학교', '직장', '친목', '기타'],
-      values: <String>['S', 'C', 'F', 'E'],
+      options: allCalendars,
+      values: allCalendarsValues,
       validator: (String value) {
-        if (value == null || value.isEmpty) return 'You must pick a type.';
+        if (value == null || value.isEmpty) return '선택해주세요.';
         return null;
       },
-      onSaved: (value) => _ponyModel.type = value,
+      onSaved: (value) => _timeTableModel.calendar = value,
       onChanged: (value) {
         setState(() {
-          _ponyModel.type = value;
+          _timeTableModel.calendar = value;
         });
         //widget.onValueChanged('Type', value);
       },
