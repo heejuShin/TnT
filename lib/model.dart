@@ -3,8 +3,43 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 
-class PonyModel {
-  String name;
+const List<String> allRepeats = <String>[
+  '월',
+  '화',
+  '수',
+  '목',
+  '금',
+  '토',
+  '일',
+];
+
+const List<String> allAlarms = <String>[
+  '없음', '5분전', '10분전', '1시간전'
+];
+const List<String> allAlarmsValues = <String>[
+  'N', '5', '10', '1'
+];
+
+const List<String> allCalendars = <String>[
+  '학교', '직장', '친목', '기타'
+];
+const List<String> allCalendarsValues = <String>[
+  'S', 'C', 'F', 'E'
+];
+
+class TimeTableModel {
+  String name = "모바일앱 개발 피그마 만들기";
+  bool isAllday = true;
+  DateTime start = DateTime(2021, 03, 24, 10, 10);
+  DateTime end = DateTime(2021, 03, 24, 22, 10);
+  List<String> repeats = <String>[
+    '월',
+    '화',
+  ];
+  String alarm = '5';
+  String calendar = 'C';
+
+
   String type = 'U';
   int age = 7;
   String gender = "F";
@@ -21,8 +56,7 @@ class PonyModel {
   double height = 3.5;
   int weight = 45;
   String style = "MG";
-  //DateTime showDateTime = DateTime(2010, 10, 10, 20, 30);
-  DateTime showDateTime;
+  DateTime showDateTime = DateTime(2010, 10, 10, 20, 30);
   double ticketPrice = 65.99;
   int boxOfficePhone = 18005551212;
   String email = 'me@nowhere.org';

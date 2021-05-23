@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
 import './addTimeTable.dart';
+import './editTimeTable.dart';
 
 void main() {
   runApp(MyApp());
@@ -667,8 +668,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 )
               ],
             ),
-
-          ),
+        )
         )
     );
   }
@@ -746,6 +746,16 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                 Text('마감일 없음'),
               ],
             )
+            // ElevatedButton.icon(
+            //   label: Text("페이지 확인용 버튼 - 수정"),
+            //   icon: Icon(Icons.help),
+            //   style: ElevatedButton.styleFrom(
+            //     primary: Colors.grey,
+            //   ),
+            //   onPressed: () {
+            //     Navigator.pushNamed(context, '/editTimeTable');
+            //   },
+            // ),
           ],
         ),
       ),
