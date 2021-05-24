@@ -75,12 +75,18 @@ class TimeTableModel {
   }
 }
 
-const List<String> allHobbies = <String>[
-  '월',
-  '화',
-  '수',
-  '목',
-  '금',
-  '토',
-  '일',
+const List<String> allThemes = <String>[
+  'black',
+  'grey',
+  'yellow',
+  'pink',
+  'skyblue',
 ];
+const List<String> allThemesValues = <String>[
+  'b','g', 'y', 'p','s'
+];
+
+
+class SettingModel {
+  String theme = 'g';
+}
