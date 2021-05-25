@@ -14,9 +14,12 @@ void main() => runApp(
   ),
 );
 
+
 class ApplicationState extends ChangeNotifier{
   //임시
+  //여기에 백엔드 추가
 }
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
