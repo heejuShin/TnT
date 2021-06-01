@@ -2,11 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import './app.dart';
 import './addTimeTable.dart';
 import './editTimeTable.dart';
 
-void main() {
-  runApp(MyApp());
+void main() => runApp(
+  ChangeNotifierProvider(
+    create: (context) => ApplicationState(),
+    builder: (context, _) => TnT(),
+  ),
+);
+
+
+class ApplicationState extends ChangeNotifier{
+  //임시
+  //여기에 백엔드 추가
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +29,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.white,
         accentColor:  Color(0xff636363),
       ),
-      home: myCalendar(),
+      home: TnT(),
     );
   }
 }
@@ -243,7 +254,9 @@ class _MonthlyCalendarState extends State<MonthlyCalendar> {
               icon: Icon(Icons.settings),
               color: Color(0xff636363),
               iconSize: 28,
-              onPressed: () {}
+              onPressed: () {
+                Navigator.pushNamed(context, '/setting');
+              }
           )
         ],
       ),
