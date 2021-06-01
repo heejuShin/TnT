@@ -730,7 +730,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   },
                 ),
                 _selectedDate == "" ?
-                Text('날짜 선택'):
+                Text('마감일 선택'):
                 Text(_selectedDate),
 
                 SizedBox(width: 20,),
