@@ -6,28 +6,24 @@ import 'package:provider/provider.dart';
 import './app.dart';
 import './addTimeTable.dart';
 import './editTimeTable.dart';
+import './application.dart';
 
 void main() => runApp(
-  ChangeNotifierProvider(
-    create: (context) => ApplicationState(),
-    builder: (context, _) => TnT(),
-  ),
-);
-
-
-class ApplicationState extends ChangeNotifier{
-  //임시
-  //여기에 백엔드 추가
-}
+      ChangeNotifierProvider(
+        create: (context) => ApplicationState(),
+        builder: (context, _) => TnT(),
+      ),
+    );
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.white,
-        accentColor:  Color(0xff636363),
+        accentColor: Color(0xff636363),
       ),
       home: TnT(),
     );
@@ -40,7 +36,7 @@ class myCalendar extends StatefulWidget {
 }
 
 class _myCalendarState extends State<myCalendar> with TickerProviderStateMixin {
-
+  ApplicationState appState = ApplicationState();
   int _selectedIndex = 0;
   // TabController _controller;
 
@@ -55,36 +51,17 @@ class _myCalendarState extends State<myCalendar> with TickerProviderStateMixin {
   //   _controller = TabController(vsync: this, length: 2);
   // }
 
+  Future<void> _getDataSource() async {
+    await appState.readAllProducts();
 
-  List<Meeting> _getDataSource() {
-    final List<Meeting> meetings = <Meeting>[];
-    final DateTime today = DateTime.now();
-    DateTime startTime =
-    DateTime(today.year, today.month, today.day, 9, 0, 0);
-    DateTime endTime = startTime.add(const Duration(hours: 2));
-    meetings.add(
-        Meeting('Conference', startTime, endTime, const Color(0xFF0F8644), false));
-
-    startTime =
-        DateTime(today.year, today.month, today.day, 14, 0, 0);
-    endTime = startTime.add(const Duration(hours: 3));
-    meetings.add(
-        Meeting('캡스톤 랩미팅', startTime, endTime, Colors.amberAccent, false));
-
-    startTime =
-        DateTime(today.year, today.month, today.day + 2, 19, 0, 0);
-    endTime = startTime.add(const Duration(hours: 2));
-    meetings.add(
-        Meeting('암스트롱 훈련', startTime, endTime, Colors.pinkAccent, false));
-
-    startTime =
-        DateTime(today.year, today.month, today.day -5, 19, 0, 0);
-    endTime = DateTime(today.year, today.month, today.day -3, 19, 0, 0);
-    meetings.add(
-        Meeting('Mobile', startTime, endTime, Colors.blue, false));
-
-    return meetings;
+    meetings = appState.timetables;
+    todolists = appState.todolist;
+    todolistsWhole = appState.todolist;
   }
+
+  List<Meeting> meetings = <Meeting>[];
+  List<Schedule> todolists = <Schedule>[];
+  List<Schedule> todolistsWhole = <Schedule>[];
 
   bool _checkbox = false;
   bool _checkbox1 = false;
@@ -102,31 +79,27 @@ class _myCalendarState extends State<myCalendar> with TickerProviderStateMixin {
   // },
 
   @override
-
   Widget build(BuildContext context) {
-
-    List<Meeting> meetingList = _getDataSource();
+    _getDataSource();
     final List<Widget> _tabWidgets = [
-      MonthlyCalendar(meetingList: meetingList),
-      WeeklyCalendar(meetingList: meetingList),
-      DailyCalendar(meetingList : meetingList),
+      MonthlyCalendar(meetingList: meetings),
+      WeeklyCalendar(meetingList: meetings),
+      DailyCalendar(meetingList: meetings),
       addTimeTable()
     ];
 
     return Scaffold(
       body: _tabWidgets[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items:  const <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today_outlined),
               label: 'month',
-              backgroundColor: Color(0xffe0e0e0)
-          ),
+              backgroundColor: Color(0xffe0e0e0)),
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today),
               label: 'week',
-              backgroundColor: Color(0xffe0e0e0)
-          ),
+              backgroundColor: Color(0xffe0e0e0)),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_view_day),
             label: 'day',
@@ -135,8 +108,7 @@ class _myCalendarState extends State<myCalendar> with TickerProviderStateMixin {
           BottomNavigationBarItem(
               icon: Icon(Icons.add),
               label: 'add',
-              backgroundColor: Color(0xffe0e0e0)
-          ),
+              backgroundColor: Color(0xffe0e0e0)),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Color(0xff636363),
@@ -154,26 +126,21 @@ class _myCalendarState extends State<myCalendar> with TickerProviderStateMixin {
                 print(MediaQuery.of(context).viewInsets.bottom);
                 return SingleChildScrollView(
                     child: Container(
-                      // padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                      // padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: AddTodoScreen(),
-                    )
-                );
+                  // padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  // padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: AddTodoScreen(),
+                ));
               },
-              isScrollControlled: true
-          );
+              isScrollControlled: true);
         },
         child: Icon(Icons.add),
-
       ),
-
-
     );
   }
 }
 
 class MeetingDataSource extends CalendarDataSource {
-  MeetingDataSource(List<Meeting> source){
+  MeetingDataSource(List<Meeting> source) {
     appointments = source;
   }
 
@@ -203,23 +170,9 @@ class MeetingDataSource extends CalendarDataSource {
   }
 }
 
-class Meeting {
-  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
-
-  String eventName;
-  DateTime from;
-  DateTime to;
-  Color background;
-  bool isAllDay;
-}
-
 // 월간
 class MonthlyCalendar extends StatefulWidget {
-
-  MonthlyCalendar({
-    Key key,
-    @required this.meetingList
-  }) : super(key: key);
+  MonthlyCalendar({Key key, @required this.meetingList}) : super(key: key);
   List<Meeting> meetingList;
 
   @override
@@ -227,9 +180,7 @@ class MonthlyCalendar extends StatefulWidget {
 }
 
 class _MonthlyCalendarState extends State<MonthlyCalendar> {
-
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -246,18 +197,15 @@ class _MonthlyCalendarState extends State<MonthlyCalendar> {
                     ),
                     context: context,
                     builder: (context) => AddTaskScreen(),
-                    isScrollControlled: true
-                );
-              }
-          ),
+                    isScrollControlled: true);
+              }),
           IconButton(
               icon: Icon(Icons.settings),
               color: Color(0xff636363),
               iconSize: 28,
               onPressed: () {
                 Navigator.pushNamed(context, '/setting');
-              }
-          )
+              })
         ],
       ),
       body: Container(
@@ -277,11 +225,7 @@ class _MonthlyCalendarState extends State<MonthlyCalendar> {
 
 // 주간
 class WeeklyCalendar extends StatefulWidget {
-
-  WeeklyCalendar({
-    Key key,
-    @required this.meetingList
-  }) : super(key: key);
+  WeeklyCalendar({Key key, @required this.meetingList}) : super(key: key);
   List<Meeting> meetingList;
 
   @override
@@ -289,6 +233,57 @@ class WeeklyCalendar extends StatefulWidget {
 }
 
 class _WeeklyCalendarState extends State<WeeklyCalendar> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('calendar'),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.list),
+                color: Color(0xff636363),
+                iconSize: 28,
+                onPressed: () {
+                  showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(13.0),
+                      ),
+                      context: context,
+                      builder: (context) => AddTaskScreen(),
+                      isScrollControlled: true);
+                }),
+            IconButton(
+                icon: Icon(Icons.settings),
+                color: Color(0xff636363),
+                iconSize: 28,
+                onPressed: () {})
+          ],
+        ),
+        body: Container(
+          // padding: EdgeInsets.all(10),
+          child: SfCalendar(
+            view: CalendarView.week,
+            dataSource: MeetingDataSource(widget.meetingList),
+          ),
+        ));
+  }
+}
+
+// 일간
+class DailyCalendar extends StatefulWidget {
+  DailyCalendar({Key key, @required this.meetingList}) : super(key: key);
+  List<Meeting> meetingList;
+
+  @override
+  _DailyCalendarState createState() => _DailyCalendarState();
+}
+
+class _DailyCalendarState extends State<DailyCalendar> {
+  bool _ischecked = false;
+  bool _ischecked2 = false;
+  bool _ischecked3 = false;
+
+  TextEditingController todoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -307,76 +302,13 @@ class _WeeklyCalendarState extends State<WeeklyCalendar> {
                     ),
                     context: context,
                     builder: (context) => AddTaskScreen(),
-                    isScrollControlled: true
-                );
-              }
-          ),
+                    isScrollControlled: true);
+              }),
           IconButton(
               icon: Icon(Icons.settings),
               color: Color(0xff636363),
               iconSize: 28,
-              onPressed: () {}
-          )
-        ],
-      ),
-      body: Container(
-        // padding: EdgeInsets.all(10),
-        child: SfCalendar(
-          view: CalendarView.week,
-          dataSource: MeetingDataSource(widget.meetingList),
-        ),
-      )
-    );
-  }
-}
-
-// 일간
-class DailyCalendar extends StatefulWidget {
-
-  DailyCalendar({
-    Key key,
-    @required this.meetingList
-  }) : super(key: key);
-  List<Meeting> meetingList;
-
-  @override
-  _DailyCalendarState createState() => _DailyCalendarState();
-}
-
-class _DailyCalendarState extends State<DailyCalendar> {
-  bool _ischecked = false;
-  bool _ischecked2 = false;
-  bool _ischecked3 = false;
-
-  TextEditingController todoController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(
-        title: Text('calendar'),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.list),
-              color: Color(0xff636363),
-              iconSize: 28,
-              onPressed: () {
-                showModalBottomSheet(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(13.0),
-                    ),
-                    context: context,
-                    builder: (context) => AddTaskScreen(),
-                    isScrollControlled: true
-                );
-              }
-          ),
-          IconButton(
-              icon: Icon(Icons.settings),
-              color: Color(0xff636363),
-              iconSize: 28,
-              onPressed: () {}
-          )
+              onPressed: () {})
         ],
       ),
       body: Container(
@@ -389,124 +321,78 @@ class _DailyCalendarState extends State<DailyCalendar> {
                   dataSource: MeetingDataSource(widget.meetingList),
                 ),
               ),
+//              Padding(
+//                padding: const EdgeInsets.fromLTRB(15, 5, 0, 5),
+//                child: Text('TODAY'),
+//              ),
               Expanded(
                 child: Column(
                   children: <Widget>[
-                    Expanded(
-                      // child: Text('TODAY')
-                      child: ListView(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 5, 0, 5),
-                            child: Text('TODAY'),
+                    Consumer<ApplicationState>(
+                        builder: (context, appState, _) => Expanded(
+                          child: ListView(
+                            children: appState.todolist.map((item) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Checkbox(
+                                    value: _ischecked,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        _ischecked = value;
+                                      });
+                                    },
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      item.eventName,
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _ischecked,
-                                onChanged: (bool value) {
-                                  setState((){
-                                    _ischecked = value;
-                                  });
-                                },
-                              ),
-                              Expanded(child:  Text('모앱개 프로젝트', style: TextStyle(fontSize: 13),),),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _ischecked2,
-                                onChanged: (bool value) {
-                                  setState((){
-                                    _ischecked2 = value;
-                                  });
-                                },
-                              ),
-                              Expanded(child:  Text('캡스톤 미팅', style: TextStyle(fontSize: 13),),),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _ischecked3,
-                                onChanged: (bool value) {
-                                  setState((){
-                                    _ischecked3 = value;
-                                  });
-                                },
-                              ),
-                              Expanded(child:  Text('모앱개 수업', style: TextStyle(fontSize: 13),),),
-                            ],
-                          ),
-                        ],
-                      ),
+                        )),
+                    Divider(
+                      color: Colors.black45,
                     ),
-                    Divider(color: Colors.black45,),
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 5, 0, 5),
-                            child: Text('WHOLE'),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _ischecked,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _ischecked = !_ischecked;
-                                  });
-                                },
+//                    Padding(
+//                      padding: const EdgeInsets.fromLTRB(15, 5, 0, 5),
+//                      child: Text('WHOLE'),
+//                    ),
+                    Consumer<ApplicationState>(
+                        builder: (context, appState, _) => Expanded(
+                              child: ListView(
+                                children: appState.todolistWhole.map((item) {
+                                  return Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Checkbox(
+                                        value: _ischecked,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _ischecked = !_ischecked;
+                                          });
+                                        },
+                                      ),
+                                      Expanded(child: Text(item.eventName)),
+                                      IconButton(
+                                          icon: Icon(Icons.minimize),
+                                          iconSize: 13,
+                                          color: Colors.blue,
+                                          onPressed: () {})
+                                    ],
+                                  );
+                                }).toList(),
                               ),
-                              Expanded(child: Text('모앱개 수업')),
-                              IconButton(icon: Icon(Icons.minimize), iconSize: 13, color: Colors.blue,onPressed: (){})
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _ischecked2,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _ischecked2 = !_ischecked2;
-                                  });
-                                },
-                              ),
-                              Expanded(child: Text('모인활 팀플')),
-                              IconButton(icon: Icon(Icons.add), iconSize: 13, color: Colors.redAccent, onPressed: (){})
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _ischecked3,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _ischecked3 = !_ischecked3;
-                                  });
-                                },
-                              ),
-                              Expanded(child: Text('캡스톤 작업')),
-                              IconButton(icon: Icon(Icons.minimize), iconSize: 13, color: Colors.blue,onPressed: (){})
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
+                            ))
                   ],
                 ),
               )
             ],
-          )
-      ),
+          )),
     );
   }
 }
@@ -534,7 +420,6 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
-
   bool _checkbox = false;
 
   @override
@@ -542,151 +427,164 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     return Container(
         height: MediaQuery.of(context).size.height / 2,
         child: Container(
-          child: DefaultTabController(
-            length: 2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TabBar(
-                  tabs: [
-                    Tab(text: "일간"),
-                    Tab(text: "전체"),
+            child: DefaultTabController(
+          length: 2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              TabBar(
+                tabs: [
+                  Tab(text: "일간"),
+                  Tab(text: "전체"),
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: <Widget>[
+                    ListView(
+                      padding: EdgeInsets.symmetric(horizontal: 7.0),
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Checkbox(
+                              value: _checkbox,
+                              onChanged: (value) {
+                                setState(() {
+                                  print(_checkbox);
+                                  _checkbox = !_checkbox;
+                                });
+                              },
+                            ),
+                            Expanded(child: Text('OODP 과제하기')),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Checkbox(
+                              value: _checkbox,
+                              onChanged: (value) {
+                                setState(() {
+                                  print(_checkbox);
+                                  _checkbox = !_checkbox;
+                                });
+                              },
+                            ),
+                            Expanded(child: Text('청소기 돌리기')),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Checkbox(
+                              value: _checkbox,
+                              onChanged: (value) {
+                                setState(() {
+                                  print(_checkbox);
+                                  _checkbox = !_checkbox;
+                                });
+                              },
+                            ),
+                            Expanded(child: Text('운동하기')),
+                          ],
+                        ),
+                      ],
+                    ),
+                    ListView(
+                      padding: EdgeInsets.symmetric(horizontal: 7.0),
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Checkbox(
+                              value: _checkbox,
+                              onChanged: (value) {
+                                setState(() {
+                                  print(_checkbox);
+                                  _checkbox = !_checkbox;
+                                });
+                              },
+                            ),
+                            Expanded(child: Text('모앱개 피그마 만들기')),
+                            IconButton(
+                                icon: Icon(Icons.add),
+                                iconSize: 13,
+                                color: Colors.redAccent,
+                                onPressed: () {})
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Checkbox(
+                              value: _checkbox,
+                              onChanged: (value) {
+                                setState(() {
+                                  print(_checkbox);
+                                  _checkbox = !_checkbox;
+                                });
+                              },
+                            ),
+                            Expanded(child: Text('운동하기')),
+                            IconButton(
+                                icon: Icon(Icons.add),
+                                iconSize: 13,
+                                color: Colors.redAccent,
+                                onPressed: () {})
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Checkbox(
+                              value: _checkbox,
+                              onChanged: (value) {
+                                setState(() {
+                                  print(_checkbox);
+                                  _checkbox = !_checkbox;
+                                });
+                              },
+                            ),
+                            Expanded(child: Text('청소기 돌리기')),
+                            IconButton(
+                                icon: Icon(Icons.minimize),
+                                iconSize: 13,
+                                color: Colors.blue,
+                                onPressed: () {})
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Checkbox(
+                              value: _checkbox,
+                              onChanged: (value) {
+                                setState(() {
+                                  print(_checkbox);
+                                  _checkbox = !_checkbox;
+                                });
+                              },
+                            ),
+                            Expanded(child: Text('OODP 과제하기')),
+                            IconButton(
+                                icon: Icon(Icons.minimize),
+                                iconSize: 13,
+                                color: Colors.blue,
+                                onPressed: () {})
+                          ],
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-                Expanded(
-                  child: TabBarView(
-                    children: <Widget>[
-                      ListView(
-                        padding: EdgeInsets.symmetric(horizontal: 7.0),
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _checkbox,
-                                onChanged: (value) {
-                                  setState(() {
-                                    print(_checkbox);
-                                    _checkbox = !_checkbox;
-                                  });
-                                },
-                              ),
-                              Expanded(child: Text('OODP 과제하기')),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _checkbox,
-                                onChanged: (value) {
-                                  setState(() {
-                                    print(_checkbox);
-                                    _checkbox = !_checkbox;
-                                  });
-                                },
-                              ),
-                              Expanded(child: Text('청소기 돌리기')),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _checkbox,
-                                onChanged: (value) {
-                                  setState(() {
-                                    print(_checkbox);
-                                    _checkbox = !_checkbox;
-                                  });
-                                },
-                              ),
-                              Expanded(child: Text('운동하기')),
-                            ],
-                          ),
-                        ],
-                      ),
-                      ListView(
-                        padding: EdgeInsets.symmetric(horizontal: 7.0),
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _checkbox,
-                                onChanged: (value) {
-                                  setState(() {
-                                    print(_checkbox);
-                                    _checkbox = !_checkbox;
-                                  });
-                                },
-                              ),
-                              Expanded(child: Text('모앱개 피그마 만들기')),
-                              IconButton(icon: Icon(Icons.add), iconSize: 13, color: Colors.redAccent, onPressed: (){})
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _checkbox,
-                                onChanged: (value) {
-                                  setState(() {
-                                    print(_checkbox);
-                                    _checkbox = !_checkbox;
-                                  });
-                                },
-                              ),
-                              Expanded(child: Text('운동하기')),
-                              IconButton(icon: Icon(Icons.add), iconSize: 13, color: Colors.redAccent, onPressed: (){})
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _checkbox,
-                                onChanged: (value) {
-                                  setState(() {
-                                    print(_checkbox);
-                                    _checkbox = !_checkbox;
-                                  });
-                                },
-                              ),
-                              Expanded(child: Text('청소기 돌리기')),
-                              IconButton(icon: Icon(Icons.minimize), iconSize: 13, color: Colors.blue,onPressed: (){})
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Checkbox(
-                                value: _checkbox,
-                                onChanged: (value) {
-                                  setState(() {
-                                    print(_checkbox);
-                                    _checkbox = !_checkbox;
-                                  });
-                                },
-                              ),
-                              Expanded(child: Text('OODP 과제하기')),
-                              IconButton(icon: Icon(Icons.minimize), iconSize: 13, color: Colors.blue,onPressed: (){})
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-        )
-        )
-    );
+              )
+            ],
+          ),
+        )));
   }
 }
-
 
 class AddTodoScreen extends StatefulWidget {
   @override
@@ -694,7 +592,6 @@ class AddTodoScreen extends StatefulWidget {
 }
 
 class _AddTodoScreenState extends State<AddTodoScreen> {
-
   TextEditingController textController = TextEditingController();
   String _selectedDate = "";
   bool _isDue = false;
@@ -731,22 +628,21 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                             data: ThemeData.light(),
                             child: child,
                           );
-                        }
-                    );
-                    selectedDate.then((dateTime){
+                        });
+                    selectedDate.then((dateTime) {
                       setState(() {
-                        if(dateTime != null)
-                          _selectedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+                        if (dateTime != null)
+                          _selectedDate =
+                              DateFormat('yyyy-MM-dd').format(dateTime);
                         print(_selectedDate);
                       });
                     });
                   },
                 ),
-                _selectedDate == "" ?
-                Text('마감일 선택'):
-                Text(_selectedDate),
-
-                SizedBox(width: 20,),
+                _selectedDate == "" ? Text('마감일 선택') : Text(_selectedDate),
+                SizedBox(
+                  width: 20,
+                ),
                 Checkbox(
                   value: _isDue,
                   onChanged: (value) {
@@ -775,4 +671,3 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
     );
   }
 }
-
